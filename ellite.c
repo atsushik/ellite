@@ -10,8 +10,10 @@
 
 #define SERIAL_DEVICE "/dev/ttyUSB0"
 #define BAUDRATE B115200
-#define SM_PWD "aaaaaaaaaaaa"
-#define SM_RBID "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+//#define SM_PWD "aaaaaaaaaaaa"
+//#define SM_RBID "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+char *sm_pwd;
+char *sm_rbid;
 
 #define BUFF_SIZE 255
  
@@ -163,13 +165,15 @@ void *sendData(void *arg){
             sleep(1);
             break;
         case PWD:
-            sprintf(buf, "SKSETPWD C %s\r\n", SM_PWD);
+            sm_pwd = getenv( "sm_pwd" );
+            sprintf(buf, "SKSETPWD C %s\r\n", sm_pwd);
             write((int)fd, buf, strlen(buf));
             stat = PWD_W;
             sleep(1);
             break;
         case RBID:
-            sprintf(buf, "SKSETRBID %s\r\n", SM_RBID);
+            sm_rbid = getenv( "sm_rbid" );
+            sprintf(buf, "SKSETRBID %s\r\n", sm_rbid);
             write((int)fd, buf, strlen(buf));
             stat = RBID_W;
             sleep(1);
