@@ -79,12 +79,12 @@ void *recvData(void *arg){
             break;
         case SCAN_W:
             if(strstr(buf,"  Channel:")>0){
-                sscanf(buf,"  Channel:%d",&channel);
-                printf("Channel=%d\n",channel);
+                sscanf(buf,"  Channel:%x",&channel);
+                printf("Channel=%x\n",channel);
             }
             if(strstr(buf,"  Pan ID:")>0){
-                sscanf(buf,"  Pan ID:%d",&panID);
-                printf("PanID=%d\n",panID);
+                sscanf(buf,"  Pan ID:%x",&panID);
+                printf("PanID=%x\n",panID);
             }
             if(strstr(buf,"  Addr:")>0){
                 sscanf(buf,"  Addr:%s",addr);
@@ -181,13 +181,13 @@ void *sendData(void *arg){
             sleep(10);
             break;
         case SREGS2:
-            sprintf(buf, "SKSREG S2 %d\r\n", channel);
+            sprintf(buf, "SKSREG S2 %x\r\n", channel);
             write((int)fd, buf, strlen(buf));
             stat = SREGS2_W;
             sleep(1);
             break;
         case SREGS3:
-            sprintf(buf, "SKSREG S3 %d\r\n", panID);
+            sprintf(buf, "SKSREG S3 %x\r\n", panID);
             write((int)fd, buf, strlen(buf));
             stat = SREGS3_W;
             sleep(1);
