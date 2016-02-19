@@ -29,3 +29,8 @@ WiringPiを使用しています。
 7セグの制御にはgpioを12本(7セグ+1ドットの8つのLEDと4桁制御)使用しています。
 gpio7seg.hで使用するピンを適宜変更してください。
 
+## 使い方
+### コンパイル
+make
+### 実行
+sm_pwd=aaaaaaaaaaaa sm_rbid=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb sudo -E ./ellite
