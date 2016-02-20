@@ -68,7 +68,7 @@ void *recvData(void *arg){
         res = read((int)fd, buf, sizeof(buf)-1);
         buf[res]='\0';
         //strcat(buff, buf);
-        printf("RECV:%s", buf);
+        fprintf(stderr, "RECV:%s", buf);
         switch(stat){
         case INIT_W:
             if(strstr(buf,"OK")>0) stat = PWD;
@@ -82,15 +82,15 @@ void *recvData(void *arg){
         case SCAN_W:
             if(strstr(buf,"  Channel:")>0){
                 sscanf(buf,"  Channel:%x",&channel);
-                printf("Channel=%x\n",channel);
+                fprintf(stderr, "Channel=%x\n",channel);
             }
             if(strstr(buf,"  Pan ID:")>0){
                 sscanf(buf,"  Pan ID:%x",&panID);
-                printf("PanID=%x\n",panID);
+                fprintf(stderr, "PanID=%x\n",panID);
             }
             if(strstr(buf,"  Addr:")>0){
                 sscanf(buf,"  Addr:%s",addr);
-                printf("Addr=%s\n",addr);
+                fprintf(stderr, "Addr=%s\n",addr);
             }
             if(panID!=0 && strstr(buf,"EVENT 22")>0) stat = SREGS2;
             if(panID==0 && strstr(buf,"EVENT 22")>0) stat = SCAN;
@@ -104,10 +104,10 @@ void *recvData(void *arg){
         case LL64_W:
             if(strstr(buf,":")>0){
                 strncpy(addrv6, buf, sizeof(addrv6)-1);
-                printf("Addrv6=%s\n",addrv6);
+                fprintf(stderr, "Addrv6=%s\n",addrv6);
                 stat = JOIN;
             }else{
-                //printf("Addrv6 get error.\n");
+                //fprintf(stderr, "Addrv6 get error.\n");
             }
             break;
         case JOIN_W:
@@ -115,12 +115,23 @@ void *recvData(void *arg){
             break;
         case CONNECTED_W:
             if((n=strstr(buf, "1081000102880105FF017201E704"))>0){
+	      char datetime[32] = {'\0'};
+	        time_t timer;
+	        struct tm *timeptr;
+	        timer = time(NULL);
+	        timeptr = localtime(&timer);
+	        strftime(datetime, 32, "%Y/%m/%d %H:%M:%S", timeptr);
+
                 strncpy(buf2, "0x", sizeof(buf2));
                 strncat(buf2, n+29, sizeof(buf2));
                 buf2[9]='\0';
-                printf("%sW\n", buf2);
+                fprintf(stderr, "%sW\n", buf2);
                 l=strtol(buf2, &endptr, 16);
-                printf("%ldW\n", l);
+                fprintf(stderr, "%ldW\n", l);
+
+	        fprintf(stdout, "{\"datetime\":\"%s\", \"Watt\":%ld, \"method\": \"smartmeter\"}\n", datetime, l);
+	        fflush(stdout);
+
                 //gpio
                 if(l<1000){value[0]=10;}else{value[0]=(l/1000)%10;}
                 if(l<100){value[1]=10;}else{value[1]=(l/100)%10;}
@@ -151,9 +162,9 @@ void *sendData(void *arg){
 
 
     for(a=0;a<bytes;a++){
-    printf("%02X ",senddata[a]);
+    fprintf(stderr, "%02X ",senddata[a]);
     }
-    printf("byte=%d\n",bytes);
+    fprintf(stderr, "byte=%d\n",bytes);
 
 
     while(1){
@@ -347,30 +358,30 @@ void main(){
 
     p_pid=getpid();
 
-//    printf("[%d]start\n",p_pid);
+//    fprintf(stderr, "[%d]start\n",p_pid);
 
     status=pthread_create(&thread_recv,NULL,recvData,(void *)fd);
 /*    if(status!=0){
-        fprintf(stderr,"pthread_create : %s",strerror(status));
+        ffprintf(stderr, stderr,"pthread_create : %s",strerror(status));
     }else{
-        printf("[%d]thread_recv=%d\n",p_pid,thread_recv);
+        fprintf(stderr, "[%d]thread_recv=%d\n",p_pid,thread_recv);
     }
 */
     status=pthread_create(&thread_send,NULL,sendData,(void *)fd);
 /*    if(status!=0){
-        fprintf(stderr,"pthread_create : %s",strerror(status));
+        ffprintf(stderr, stderr,"pthread_create : %s",strerror(status));
     }else{
-        printf("[%d]thread_send=%d\n",p_pid,thread_send);
+        fprintf(stderr, "[%d]thread_send=%d\n",p_pid,thread_send);
     }
 */
     pthread_join(thread_recv,&result);
-    printf("[%d]thread_recv = %d end\n",p_pid,thread_recv);
+    fprintf(stderr, "[%d]thread_recv = %d end\n",p_pid,thread_recv);
     pthread_join(thread_send,&result);
-    printf("[%d]thread_send = %d end\n",p_pid,thread_send);
+    fprintf(stderr, "[%d]thread_send = %d end\n",p_pid,thread_send);
 
     //gpio
     pthread_join(thread_id1,&result);
     //gpio
 
-    printf("[%d]end\n",p_pid);
+    fprintf(stderr, "[%d]end\n",p_pid);
 }
