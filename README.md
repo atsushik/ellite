@@ -34,3 +34,20 @@ gpio7seg.hで使用するピンを適宜変更してください。
 make
 ### 実行
 sm_pwd=aaaaaaaaaaaa sm_rbid=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb sudo -E ./ellite
+### 実行例
+- 標準出力にはjson形式で時刻と消費電力の瞬間値が出る
+``` sh:stdout.txt
+{"datetime":"2016/02/20 16:22:54", "Watt":1493, "method": "smartmeter"}
+{"datetime":"2016/02/20 16:22:57", "Watt":1490, "method": "smartmeter"}
+{"datetime":"2016/02/20 16:23:00", "Watt":1488, "method": "smartmeter"}
+{"datetime":"2016/02/20 16:23:03", "Watt":1488, "method": "smartmeter"}
+```
+- 標準エラーには接続時に取得した情報などが出る
+``` sh:stderr.txt
+```
+
+### 想定使用例
+下記のようにすることで約３秒毎に使用電力量の瞬時値がmqttサーバに送られる
+``` sh:sample-usage.txt
+sudo sm_pwd=aaaaaaaaaaaa sm_rbid=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb ./ellite | python sendToMqtt.py
+```
