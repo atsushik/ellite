@@ -108,7 +108,7 @@ void start7SegLoopTherad(){
     if(status != 0){
         fprintf(stderr,"pthread_create : %s\n", strerror(status));
     }else{
-        printf("7SegLoopThread start!\n");
+        fprintf(stderr,"7SegLoopThread start!\n", strerror(status));
     }
 }
 
