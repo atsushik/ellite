@@ -33,7 +33,7 @@ gpio7seg.hで使用するピンを適宜変更してください。
 ### コンパイル
 make
 ### 実行
-sm_pwd=aaaaaaaaaaaa sm_rbid=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb sudo -E ./ellite
+sm_pwd=aaaaaaaaaaaa sm_rbid=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb sudo -E ./ellite > ~/smartmeter.json 2> ~/smartmeter.log
 ### 実行例
 - 標準出力にはjson形式で時刻と消費電力の瞬間値が出る
 ``` sh:stdout.txt
