@@ -1,0 +1,14 @@
+{"apps" : [{
+	"name": "ellite",
+	"script": "./ellite > /var/log/smartmeter.json 2> /var/log/smartmeter.log",
+	"exec_interpreter": "none",
+	"exec_mode"  : "fork_mode",
+	"error_file": "smartmeter_err.log",
+	"out_file": "smartmeter_out.log",
+	"watch": "true",
+	"env": {
+		"sm_pwd":  "aaaaaaaaaaaa",
+		"sm_rbid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+	}
+}]}
+
